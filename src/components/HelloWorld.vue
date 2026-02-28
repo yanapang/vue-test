@@ -10,6 +10,8 @@
       </p>
     </div>
 
+    response data here -> {{data}}
+
     <p>
       Check out
       <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
@@ -29,11 +31,26 @@
 
 </template>
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
+import {useQuery} from "@tanstack/vue-query";
+import {fetchHello} from "../api/commonApi.ts";
 
 defineProps<{ msg: string }>()
 
 const count = ref(0)
+
+const { data } = useQuery({
+  queryKey: ['hello'],
+  queryFn: () => fetchHello(),
+  enabled: true,
+  refetchOnReconnect:false,
+  select: ({data}) => data,
+})
+
+watch(data, () => {
+  console.log(data)
+})
+
 </script>
 <style scoped>
 .read-the-docs {
